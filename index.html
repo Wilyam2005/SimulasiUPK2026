@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CYBER-UPK 2026 | Portal Simulasi Ujian</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #0d0f1e;
+            --bg-card: rgba(16, 20, 39, 0.85);
+            --accent-main: #00e5ff;
+            --accent-sub: #7a00ff;
+            --text-main: #f0f0f0;
+            --text-sub: #a0b0c0;
+            --correct-glow: #00ff88;
+            --blur: 15px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: linear-gradient(135deg, var(--bg-color) 0%, #1a1e3a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Elemen Latar Belakang Futuristik */
+        body::before, body::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: var(--accent-sub);
+            filter: blur(150px);
+            opacity: 0.2;
+            z-index: -1;
+        }
+        body::before { top: -50px; left: -50px; }
+        body::after { bottom: -50px; right: -50px; }
+
+        .app-container {
+            width: 100%;
+            max-width: 700px;
+            perspective: 1000px;
+        }
+
+        .cyber-card {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(var(--blur));
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;
+        }
+
+        /* Judul Besar */
+        .cyber-card h1 {
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            margin-bottom: 10px;
+            color: var(--accent-main);
+            text-shadow: 0 0 10px var(--accent-main);
+            letter-spacing: 2px;
+            font-size: 2.2rem;
+        }
+        .cyber-card h2 {
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            color: var(--accent-main);
+            text-shadow: 0 0 10px var(--accent-main);
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-sub);
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-sub);
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent-main);
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Ikon Lihat Sandi */
+        .password-container {
+            position: relative;
+        }
+
+        .form-group .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 18px;
+            transform: translateY(-50%);
+            color: var(--text-sub);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .form-group .toggle-password:hover {
+            color: var(--accent-main);
+        }
+
+        /* Tombol Cyber-style */
+        .cyber-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--accent-main) 0%, var(--accent-sub) 100%);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 229, 255, 0.3);
+            margin-top: 15px;
+        }
+
+        .cyber-btn:hover {
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.7);
+            transform: translateY(-2px);
+        }
+
+        /* Quiz Styling */
+        #quiz-screen, #result-screen {
+            display: none;
+        }
+
+        .header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .info-block {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+        }
+
+        .info-block span {
+            color: var(--accent-main);
+            font-weight: 600;
+        }
+
+        .question {
+            margin-bottom: 25px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 3px solid var(--accent-sub);
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .options-grid label {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            font-weight: 400;
+            color: var(--text-sub);
+        }
+
+        .options-grid label:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .options-grid input {
+            margin-right: 12px;
+            accent-color: var(--accent-main); /* Warna checkbox modern */
+            cursor: pointer;
+        }
+
+        .options-grid input:checked + span {
+            color: var(--accent-main);
+            font-weight: 600;
+        }
+
+        .score-display {
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--correct-glow);
+            text-shadow: 0 0 15px var(--correct-glow);
+            margin: 25px 0;
+        }
+
+        .result-message {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--text-sub);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .error-msg {
+            color: #ff4444;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            text-align: center;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        /* Responsivitas - Menyesuaikan semua device */
+        @media (max-width: 600px) {
+            .cyber-card {
+                padding: 30px 20px;
+            }
+            .cyber-card h1 {
+                font-size: 1.8rem;
+            }
+            .cyber-card h2 {
+                font-size: 1.5rem;
+            }
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            .header-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            .form-group input {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="cyber-card" id="login-screen">
+            <h1>CYBER-UPK 2026</h1>
+            <p class="subtitle">Validasi akses ke portal simulasi ujian virtual.</p>
+            
+            <div class="form-group">
+                <label for="nama">Identitas Pengguna</label>
+                <input type="text" id="nama" placeholder="Masukkan nama lengkap kamu" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="token">Sinyal Akses (Token)</label>
+                <div class="password-container">
+                    <input type="password" id="token" placeholder="Masukkan token simulasi" required>
+                    <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+                </div>
+                <div class="error-msg" id="error-msg">Sinyal tidak valid. Silakan coba lagi.</div>
+            </div>
+            
+            <button class="cyber-btn" onclick="login()">Buka Akses</button>
+        </div>
+
+        <div class="cyber-card" id="quiz-screen">
+            <h2>SOAL SIMULASI</h2>
+            <div class="header-info">
+                <div class="info-block">Peserta: <span id="display-nama"></span></div>
+                <div class="info-block">Sistem: <span>AKTIF</span></div>
+            </div>
+            <div id="quiz-container"></div>
+            <button class="cyber-btn" onclick="submitQuiz()">Kirim Sinyal Jawaban</button>
+        </div>
+
+        <div class="cyber-card" id="result-screen">
+            <h2>HASIL SIMULASI</h2>
+            <div class="result-message">Log aktivitas selesai. Perhitungan akurasi sinyal:</div>
+            <div class="score-display" id="score-display">0%</div>
+            <p class="result-message" id="result-message"></p>
+            <button class="cyber-btn" onclick="location.reload()">Selesai & Reset Sistem</button>
+        </div>
+    </div>
+
+    <script>
+        const validToken = "Simulasi 2026";
+        let userName = "";
+
+        // Soal dan Opsi (A=0, B=1, C=2, D=3)
+        const questions = [
+            { q: "Apa warna langit pada siang hari yang cerah?", options: ["Hijau", "Biru", "Ungu", "Merah muda"], answer: 1 },
+            { q: "Hewan peliharaan apa yang dikenal suka mengeong?", options: ["Ayam", "Sapi", "Kucing", "Bebek"], answer: 2 },
+            { q: "Hasil dari 1 ditambah 1 adalah?", options: ["2", "5", "10", "11"], answer: 0 },
+            { q: "Benda apa yang paling umum digunakan untuk melihat waktu?", options: ["Sepatu", "Piring", "Jam", "Kipas angin"], answer: 2 },
+            { q: "Apa nama planet yang kita tinggali saat ini?", options: ["Mars", "Bumi", "Jupiter", "Saturnus"], answer: 1 },
+            { q: "Lawan kata dari 'siang' adalah?", options: ["Pagi", "Sore", "Malam", "Cerah"], answer: 2 },
+            { q: "Air biasa yang dibekukan di dalam lemari es akan berubah menjadi?", options: ["Uap", "Es batu", "Sirup", "Awan"], answer: 1 },
+            { q: "Kendaraan bermotor beroda empat yang biasa melaju di jalan raya disebut?", options: ["Sepeda", "Pesawat", "Perahu", "Mobil"], answer: 3 },
+            { q: "Matahari selalu terbit dari sebelah mana?", options: ["Utara", "Selatan", "Barat", "Timur"], answer: 3 },
+            { q: "Rasa dari gula pasir adalah?", options: ["Asin", "Pahit", "Pedas", "Manis"], answer: 3 }
+        ];
+
+        // Fungsi Toggling Lihat Sandi
+        const togglePassword = document.querySelector('#togglePassword');
+        const passwordInput = document.querySelector('#token');
+
+        togglePassword.addEventListener('click', function (e) {
+            // Ubah tipe input
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // Ubah ikon mata
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        // Animasi pergantian layar (smooth fade)
+        function changeScreen(from, to) {
+            const current = document.getElementById(from);
+            const target = document.getElementById(to);
+            current.style.opacity = 0;
+            current.style.transform = "rotateY(90deg)";
+            setTimeout(() => {
+                current.style.display = "none";
+                target.style.display = "block";
+                setTimeout(() => {
+                    target.style.opacity = 1;
+                    target.style.transform = "rotateY(0deg)";
+                }, 10);
+            }, 500);
+        }
+
+        // Fungsi Login dan Validasi
+        function login() {
+            const inputNama = document.getElementById("nama").value.trim();
+            const inputToken = document.getElementById("token").value;
+            const errorMsg = document.getElementById("error-msg");
+
+            if (inputNama === "") {
+                alert("Harap masukkan identitas pengguna kamu!");
+                return;
+            }
+
+            if (inputToken === validToken) {
+                userName = inputNama;
+                errorMsg.style.display = "none";
+                errorMsg.style.opacity = 0;
+                document.getElementById("display-nama").innerText = userName;
+                renderQuiz();
+                changeScreen("login-screen", "quiz-screen");
+            } else {
+                errorMsg.style.display = "block";
+                errorMsg.style.opacity = 1;
+                passwordInput.value = ""; // Bersihkan token
+            }
+        }
+
+        // Membuat HTML Soal Secara Dinamis
+        function renderQuiz() {
+            const quizContainer = document.getElementById("quiz-container");
+            let html = "";
+            
+            questions.forEach((q, index) => {
+                html += `
+                    <div class="question">
+                        <p class="question-text">${index + 1}. ${q.q}</p>
+                        <div class="options-grid">
+                `;
+                
+                q.options.forEach((opt, i) => {
+                    html += `
+                        <label>
+                            <input type="radio" name="q${index}" value="${i}">
+                            <span>${opt}</span>
+                        </label>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+            
+            quizContainer.innerHTML = html;
+        }
+
+        // Fungsi Perhitungan Skor
+        function submitQuiz() {
+            let score = 0;
+            let unanswered = false;
+
+            questions.forEach((q, index) => {
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                if (!selected) {
+                    unanswered = true;
+                } else if (parseInt(selected.value) === q.answer) {
+                    score += 10; // Setiap soal benar bernilai 10 poin
+                }
+            });
+
+            if (unanswered) {
+                const confirmSubmit = confirm("Log sinyal belum lengkap. Kamu belum menjawab semua soal. Yakin ingin mengirim sinyal apa adanya?");
+                if (!confirmSubmit) return;
+            }
+
+            document.getElementById("score-display").innerText = `${score}%`;
+            document.getElementById("result-message").innerText = `Log aktivitas selesai, Peserta ${userName}! Akurasi sinyal kamu mencapai ${score} dari 100 poin.`;
+            changeScreen("quiz-screen", "result-screen");
+        }
+    </script>
+</body>
+</html>
